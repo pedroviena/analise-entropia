@@ -2,12 +2,17 @@ import requests
 import nltk
 import math
 import numpy as np
-import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import Counter
 import os
 from datetime import datetime
+import matplotlib
 
+
+if os.environ.get('CI'):
+    matplotlib.use('Agg')
+
+import matplotlib.pyplot as plt
 
 BOOKS_TO_ANALYZE = [
     {
@@ -27,6 +32,7 @@ BOOKS_TO_ANALYZE = [
     }
 ]
 
+# --- FUNÇÕES PRINCIPAIS ---
 
 def download_file(url, filename):
     """Baixa um arquivo se ele ainda não existir no diretório."""
@@ -139,7 +145,10 @@ def create_entropy_plot(analysis_results):
     output_filename = 'grafico_entropia_comparativo.png'
     plt.savefig(output_filename, dpi=300, bbox_inches='tight')
     print(f"Gráfico salvo com sucesso como '{output_filename}'!")
-    plt.show()
+    
+    # Exibe o gráfico apenas se NÃO estiver em um ambiente de CI
+    if not os.environ.get('CI'):
+        plt.show()
 
 def generate_report(results):
     """Gera um arquivo de relatório simples para ser usado em CI/CD."""
@@ -182,3 +191,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

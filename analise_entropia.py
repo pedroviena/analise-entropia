@@ -14,6 +14,8 @@ if os.environ.get('CI'):
 
 import matplotlib.pyplot as plt
 
+# --- CONFIGURAÇÃO ---
+# Adicione novos livros aqui para análise automática
 BOOKS_TO_ANALYZE = [
     {
         "name": "Moby Dick",
@@ -53,10 +55,14 @@ def download_file(url, filename):
 
 def setup_nltk():
     """Verifica e baixa os pacotes NLTK necessários, se preciso."""
-    required_resources = ['punkt']
+    required_resources = ['punkt', 'punkt_tab']
     for resource in required_resources:
         try:
-            nltk.data.find(f'tokenizers/{resource}')
+            # A forma de encontrar punkt_tab é um pouco diferente
+            if resource == 'punkt_tab':
+                 nltk.data.find(f'tokenizers/{resource}/english')
+            else:
+                 nltk.data.find(f'tokenizers/{resource}')
         except LookupError:
             print(f"Baixando dados do NLTK: '{resource}'...")
             nltk.download(resource, quiet=True)
